@@ -76,11 +76,12 @@ class FileStorage:
         return self.all().get(f"{cls.__name__}.{id}", None)
 
     def count(self, cls=None):
-        """Counts the number of objects in storage matching the class"""
+        """
+        Returns the number of objects in the storage.
+        If cls is specified, returns the number of objects of that class.
+        """
+        obj = 0
         if cls is None:
-            return len(self.all())
-        count = 0
-        for key in self.all().keys():
-            if key.startswith(cls.__name__):
-                count += 1
-        return count
+            return len(self._FileStorage__objects)
+        elif isinstance(obj, cls):
+            return len(obj for obj in self._FileStorage__objects.values())
