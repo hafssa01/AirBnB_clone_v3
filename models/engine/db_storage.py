@@ -98,4 +98,8 @@ class DBStorage:
         else:
             count = len(models.storage.all(cls).values())
 
+        for clas, value in classes.items():
+            if cls == clas or cls == value:
+                count += len(models.storage.all(cls).values())
+
         return count
