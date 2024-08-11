@@ -51,6 +51,31 @@ class DBStorage:
                     new_dict[key] = obj
         return (new_dict)
 
+    def get(self, cls, id):
+        """query for object (with id) on the current database session
+        Returns: Object if found and None otherwise """
+        # check that cls and id are defined
+        for clss in classes:
+            if cls is classes[clss] or cls is clss:
+                objs = self.__session.query(classes[clss]).all()
+                # check for the specific object
+                for obj in objs:
+                    if obj.id == id:
+                        return (obj)
+                return None  # object(of id) not in objects
+        return None  # cls not in classes/undefined
+
+    def count(self, cls=None):
+        """ Return the number od objects in storage matching the
+        given class and if no class is given, count all objects in storage """
+        # get cls objects count if given, else count all objects
+        objs_list = []
+        for class_ in classes:
+            if cls is None or cls is class_ or cls is classes[class_]:
+                objs = self.__session.query(classes[class_]).all()
+                objs_list.extend(objs)
+        return len(objs_list)
+
     def new(self, obj):
         """add the object to the current database session"""
         self.__session.add(obj)
@@ -74,32 +99,3 @@ class DBStorage:
     def close(self):
         """call remove() method on the private session attribute"""
         self.__session.remove()
-
-    def get(self, cls, id):
-        """Retrieve one object"""
-        if cls not in classes.values():
-            return None
-
-        all_cls = models.storage.all(cls)
-        for value in all_cls.values():
-            if (value.id == id):
-                return value
-
-        return None
-
-    def count(self, cls=None):
-        """Count in storage the number of objects"""
-        all_class = classes.values()
-
-        if not cls:
-            count = 0
-            for item in all_class:
-                count += len(models.storage.all(item).values())
-        else:
-            count = len(models.storage.all(cls).values())
-
-        for clas, value in classes.items():
-            if cls == clas or cls == value:
-                count += len(models.storage.all(cls).values())
-
-        return count

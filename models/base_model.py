@@ -2,8 +2,11 @@
 """
 Contains class BaseModel
 """
+
 from datetime import timezone
 from datetime import datetime
+
+from datetime import datetime, timezone
 import models
 from os import getenv
 import sqlalchemy

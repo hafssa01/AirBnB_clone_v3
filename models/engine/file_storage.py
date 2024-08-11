@@ -35,6 +35,35 @@ class FileStorage:
             return new_dict
         return self.__objects
 
+    def get(self, cls, id):
+        """returns the object of class cls and id == id & None
+        if not found """
+        # check that class is a valid class
+        if cls in classes.values():
+            obj_key = '{}.{}'.format(cls.__name__, id)
+        elif cls in classes.keys():
+            obj_key = '{}.{}'.format(cls, id)
+            # print('cls in class.keys -> {}'.format(obj_key))
+        else:
+            return None  # invalid class
+        # check for an object with key = cls.id
+        for key, value in self.__objects.items():
+            if key == obj_key:
+                return value
+        return None
+
+    def count(self, cls=None):
+        """returns the number of objects of a cls class in storage
+        if defined and number of all objects if cls is undefined """
+        if cls is None:
+            return len(self.__objects.keys())
+        else:
+            count = 0
+            for key, value in self.__objects.items():
+                if cls == value.__class__ or cls == value.__class__.__name__:
+                    count += 1
+            return count
+
     def new(self, obj):
         """sets in __objects the obj with key <obj class name>.id"""
         if obj is not None:
@@ -56,7 +85,11 @@ class FileStorage:
                 jo = json.load(f)
             for key in jo:
                 self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
+<<<<<<< HEAD
         except Exception:
+=======
+        except Exception as e:
+>>>>>>> 1042330aa0a4a27ec0b41ed3b05f8d8c54075e8a
             pass
 
     def delete(self, obj=None):
@@ -65,9 +98,12 @@ class FileStorage:
             key = obj.__class__.__name__ + '.' + obj.id
             if key in self.__objects:
                 del self.__objects[key]
+                # save after changes
+                self.save()
 
     def close(self):
         """call reload() method for deserializing the JSON file to objects"""
+<<<<<<< HEAD
         self.reload()
 
     def get(self, cls, id):
@@ -94,3 +130,6 @@ class FileStorage:
             count = len(models.storage.all(cls).values())
 
         return count
+=======
+        self.reload()
+>>>>>>> 1042330aa0a4a27ec0b41ed3b05f8d8c54075e8a
